@@ -347,9 +347,8 @@ offset_bottom = 48.0
 mouse_filter = 1
 
 [node name="Button" parent="MenuButton" index="0" unique_id=1797805036]
-offset_left = 27.0
 offset_top = 2.0
-offset_right = 94.0
+offset_right = 133.0
 offset_bottom = 105.0
 
 [node name="MenuBar" parent="." index="7" unique_id=308624412]
