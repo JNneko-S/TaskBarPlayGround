@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://cfh10dk73ugy0"]
+
+[ext_resource type="Script" uid="uid://d017ua87oahdm" path="res://Scene/pickup_comporment.gd" id="1_lu3sj"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_2ht62"]
+size = Vector2(130, 131)
+
+[node name="PickupComponent" type="Area2D" unique_id=1819781862]
+collision_layer = 64
+collision_mask = 64
+script = ExtResource("1_lu3sj")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=456453865]
+position = Vector2(0, -0.5)
+shape = SubResource("RectangleShape2D_2ht62")
+debug_color = Color(0, 0.8039216, 0.69803923, 0.41960785)
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]

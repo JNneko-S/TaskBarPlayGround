@@ -1,0 +1,136 @@
+[gd_scene format=3 uid="uid://cbyy8utcpwq6i"]
+
+[ext_resource type="Script" uid="uid://cxbox1nyi1bvg" path="res://Character.gd" id="1_glpr6"]
+[ext_resource type="Shader" uid="uid://0bg3ivkcb5it" path="res://Outline.gdshader" id="2_0qfo5"]
+[ext_resource type="Script" uid="uid://cloo6hvvho0ws" path="res://Component/FSM/StateMachine.gd" id="2_pjt0s"]
+[ext_resource type="Texture2D" uid="uid://5rbouoa0ls6y" path="res://Assets/Icon/message.png" id="3_px5sl"]
+[ext_resource type="Texture2D" uid="uid://c4vualq15mk2e" path="res://Assets/Icon/chest.png" id="4_0qfo5"]
+[ext_resource type="Texture2D" uid="uid://ddob2kq7qaq2o" path="res://Assets/Icon/warrior-gloves-lv1.png" id="5_yxww1"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_nnapu"]
+shader = ExtResource("2_0qfo5")
+shader_parameter/thickness = 0.0
+shader_parameter/ring_count = 12
+shader_parameter/ring_offset = 0.0
+shader_parameter/outline_color = Color(1, 1, 0.5137255, 1)
+shader_parameter/border_clipping_fix = true
+shader_parameter/aspect_ratio = 1.0
+shader_parameter/square_border = true
+shader_parameter/offset = Vector2(0, 0)
+shader_parameter/max_or_add = false
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_pjt0s"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wa5vi"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_wfnr8"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_px5sl"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_jhy2k"]
+
+[node name="Character" type="CharacterBody2D" unique_id=511040794]
+script = ExtResource("1_glpr6")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=620507202]
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=650215649]
+material = SubResource("ShaderMaterial_nnapu")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=665967752]
+
+[node name="StateMachine" type="Node" parent="." unique_id=1142003701]
+script = ExtResource("2_pjt0s")
+metadata/_custom_type_script = "uid://cloo6hvvho0ws"
+
+[node name="MenuButton" type="Control" parent="." unique_id=1668462171]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Button" type="Button" parent="MenuButton" unique_id=1797805036]
+layout_mode = 0
+offset_right = 67.0
+offset_bottom = 66.0
+theme_override_styles/normal = SubResource("StyleBoxEmpty_pjt0s")
+theme_override_styles/pressed = SubResource("StyleBoxEmpty_wa5vi")
+theme_override_styles/hover = SubResource("StyleBoxEmpty_wfnr8")
+theme_override_styles/disabled = SubResource("StyleBoxEmpty_px5sl")
+
+[node name="MenuBar" type="Control" parent="." unique_id=308624412]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Panel" type="Panel" parent="MenuBar" unique_id=296568358]
+layout_mode = 1
+offset_right = 228.0
+offset_bottom = 47.0
+
+[node name="GridContainer" type="GridContainer" parent="MenuBar/Panel" unique_id=1463393677]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -109.0
+offset_top = -21.0
+offset_right = 109.0
+offset_bottom = 21.0
+grow_horizontal = 2
+grow_vertical = 2
+columns = 3
+
+[node name="Talk" type="Button" parent="MenuBar/Panel/GridContainer" unique_id=846147394]
+custom_minimum_size = Vector2(70, 42)
+custom_maximum_size = Vector2(70, 42)
+layout_mode = 2
+icon = ExtResource("3_px5sl")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Present" type="Button" parent="MenuBar/Panel/GridContainer" unique_id=234039229]
+custom_minimum_size = Vector2(70, 42)
+layout_mode = 2
+icon = ExtResource("4_0qfo5")
+icon_alignment = 1
+expand_icon = true
+
+[node name="Slap" type="Button" parent="MenuBar/Panel/GridContainer" unique_id=711394833]
+custom_minimum_size = Vector2(70, 42)
+layout_mode = 2
+icon = ExtResource("5_yxww1")
+icon_alignment = 1
+expand_icon = true
+
+[node name="TalkBar" type="Control" parent="." unique_id=1137477901]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Panel" type="Panel" parent="TalkBar" unique_id=1126630262]
+layout_mode = 0
+offset_right = 228.0
+offset_bottom = 47.0
+
+[node name="TalkLabel" type="Label" parent="TalkBar/Panel" unique_id=1459033312]
+layout_mode = 0
+offset_top = 11.0
+offset_right = 228.0
+offset_bottom = 34.0
+label_settings = SubResource("LabelSettings_jhy2k")
+horizontal_alignment = 1
+
+[node name="TalkTimer" type="Timer" parent="." unique_id=765781230]
+wait_time = 6.0
+one_shot = true
+
+[connection signal="mouse_entered" from="MenuButton/Button" to="." method="_on_button_mouse_entered"]
+[connection signal="mouse_exited" from="MenuButton/Button" to="." method="_on_button_mouse_exited"]
+[connection signal="pressed" from="MenuButton/Button" to="." method="_on_button_pressed"]
+[connection signal="pressed" from="MenuBar/Panel/GridContainer/Talk" to="." method="_on_talk_pressed"]
+[connection signal="timeout" from="TalkTimer" to="." method="_on_talk_timer_timeout"]

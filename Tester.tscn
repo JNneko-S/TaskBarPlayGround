@@ -1,0 +1,371 @@
+[gd_scene format=3 uid="uid://51ntietqqq8u"]
+
+[ext_resource type="PackedScene" uid="uid://cbyy8utcpwq6i" path="res://character.tscn" id="1_8cduc"]
+[ext_resource type="Texture2D" uid="uid://b0g1sufypo1ub" path="res://Assets/Archer/Archer/Archer_Idle.png" id="2_67e2f"]
+[ext_resource type="Script" uid="uid://dih0djlslh3ym" path="res://Tester.gd" id="2_sc5u8"]
+[ext_resource type="Texture2D" uid="uid://boefmtpvfcshu" path="res://Assets/Archer/Archer/Archer_Walk.png" id="3_sc5u8"]
+[ext_resource type="Script" uid="uid://bhq7l1h5sp80q" path="res://TesterIdle.gd" id="5_nnapu"]
+[ext_resource type="Script" uid="uid://blpfarlsvlmxr" path="res://TesterWalk.gd" id="6_nnapu"]
+
+[sub_resource type="Animation" id="Animation_nnapu"]
+resource_name = "Idle"
+length = 0.6
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Idle"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+
+[sub_resource type="Animation" id="Animation_dm8yx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Idle"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [0]
+}
+
+[sub_resource type="Animation" id="Animation_c4amv"]
+resource_name = "Walk"
+length = 0.8
+loop_mode = 1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatedSprite2D:animation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [&"Walk"]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatedSprite2D:frame")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5, 6, 7]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_uapm7"]
+_data = {
+&"Idle": SubResource("Animation_nnapu"),
+&"RESET": SubResource("Animation_dm8yx"),
+&"Walk": SubResource("Animation_c4amv")
+}
+
+[sub_resource type="Shader" id="Shader_nnapu"]
+code = "shader_type canvas_item;
+render_mode unshaded;
+
+uniform float thickness : hint_range(0.0, 100.0);
+uniform int ring_count : hint_range(1,128) = 16;
+uniform float ring_offset : hint_range(0.0, 1.0, 0.01);
+uniform vec4 outline_color : source_color;
+uniform bool border_clipping_fix = true;
+uniform float aspect_ratio : hint_range(0.1, 10.0, 0.01) = 1.0;
+uniform bool square_border = false;
+uniform vec2 offset;
+uniform bool max_or_add = false;
+
+void vertex(){
+	if (border_clipping_fix){
+		vec2 o = (UV * 2.0 - 1.0);
+		VERTEX += o * thickness - offset;
+		VERTEX.x *= 1.0 + (aspect_ratio-1.0) * (thickness * TEXTURE_PIXEL_SIZE.x) * 2.0;
+	}
+}
+
+vec2 square(float i){ // samples a square pattern
+	i *= 2.0;
+	return (vec2(
+		clamp(abs(mod(i,2.0)-1.0),0.25,0.75),
+		clamp(abs(mod(i+0.5,2.0)-1.0),0.25,0.75)
+		)-0.5)*4.0;
+}
+
+vec4 tex(sampler2D sampler, vec2 uv){
+	vec4 clr;
+	if (uv.x > 0.0 && uv.y > 0.0 && uv.x < 1.0 && uv.y < 1.0){ // bleeding texture sampling fix
+		clr = texture(sampler, uv);
+	}else{clr = vec4(0.0);}
+	return clr;
+}
+
+void fragment(){
+	vec2 o = offset / vec2(textureSize(TEXTURE, 0));
+	vec2 uv = UV;
+	uv -= vec2(0.5);
+	if (border_clipping_fix){
+		uv.x *= 1.0 + (aspect_ratio-1.0) * thickness * TEXTURE_PIXEL_SIZE.x * 2.0;
+		uv *= (1.0 + (thickness * TEXTURE_PIXEL_SIZE * 2.0));
+		uv -= o;
+		}
+	uv += vec2(0.5);
+	vec2 size = vec2(thickness) / vec2(textureSize(TEXTURE, 0));
+	
+	vec4 sprite_color = tex(TEXTURE, uv);
+	
+	float alpha = sprite_color.a;
+	if (square_border){
+		for(int i=0;i<ring_count;++i){
+			float r = float(i) / float(ring_count) + ring_offset;
+			alpha = max(alpha,texture(TEXTURE, uv + o + size * square(r) * vec2(aspect_ratio,1.0)).a * outline_color.a);}// texture sampling fix is disabled because both with and without give the same result
+	}else{
+		for(int i=0;i<ring_count;++i){
+			float r = float(i) * 3.14159 / float(ring_count) * 2.0 + ring_offset;
+			if (max_or_add){
+				alpha = alpha+tex(TEXTURE, uv + o +  vec2(size.x * sin(r) * aspect_ratio, size.y * cos(r))).a * outline_color.a;
+			}else{
+				alpha = max(alpha,tex(TEXTURE, uv + o +  vec2(size.x * sin(r) * aspect_ratio, size.y * cos(r))).a * outline_color.a);
+			}
+		}
+	}
+    vec3 final_color = mix(outline_color.rgb, sprite_color.rgb, sprite_color.a);
+    COLOR = vec4(final_color, clamp(alpha, 0.0, 1.0));
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_c4amv"]
+shader = SubResource("Shader_nnapu")
+shader_parameter/thickness = 0.0
+shader_parameter/ring_count = 12
+shader_parameter/ring_offset = 0.0
+shader_parameter/outline_color = Color(1, 1, 0.5137255, 1)
+shader_parameter/border_clipping_fix = false
+shader_parameter/aspect_ratio = 1.0
+shader_parameter/square_border = true
+shader_parameter/offset = Vector2(0, 0)
+shader_parameter/max_or_add = false
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_igjsu"]
+atlas = ExtResource("2_67e2f")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qsqaf"]
+atlas = ExtResource("2_67e2f")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_g5gc0"]
+atlas = ExtResource("2_67e2f")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_gfkl0"]
+atlas = ExtResource("2_67e2f")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rjrwd"]
+atlas = ExtResource("2_67e2f")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_h5g8q"]
+atlas = ExtResource("2_67e2f")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_f1583"]
+atlas = ExtResource("3_sc5u8")
+region = Rect2(0, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_3t8gq"]
+atlas = ExtResource("3_sc5u8")
+region = Rect2(100, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_rivor"]
+atlas = ExtResource("3_sc5u8")
+region = Rect2(200, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_davsg"]
+atlas = ExtResource("3_sc5u8")
+region = Rect2(300, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qis3j"]
+atlas = ExtResource("3_sc5u8")
+region = Rect2(400, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fhiw2"]
+atlas = ExtResource("3_sc5u8")
+region = Rect2(500, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_bvv68"]
+atlas = ExtResource("3_sc5u8")
+region = Rect2(600, 0, 100, 100)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_2eit8"]
+atlas = ExtResource("3_sc5u8")
+region = Rect2(700, 0, 100, 100)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_3tbxw"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_igjsu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qsqaf")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_g5gc0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_gfkl0")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rjrwd")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_h5g8q")
+}],
+"loop": 1,
+"name": &"Idle",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_f1583")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_3t8gq")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_rivor")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_davsg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qis3j")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fhiw2")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_bvv68")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_2eit8")
+}],
+"loop": 1,
+"name": &"Walk",
+"speed": 5.0
+}]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_wa5vi"]
+radius = 45.54119
+
+[node name="Tester" unique_id=511040794 instance=ExtResource("1_8cduc")]
+script = ExtResource("2_sc5u8")
+
+[node name="AnimationPlayer" parent="." index="0" unique_id=620507202]
+libraries/ = SubResource("AnimationLibrary_uapm7")
+
+[node name="AnimatedSprite2D" parent="." index="1" unique_id=650215649]
+material = SubResource("ShaderMaterial_c4amv")
+scale = Vector2(6, 6)
+sprite_frames = SubResource("SpriteFrames_3tbxw")
+animation = &"Idle"
+
+[node name="CollisionShape2D" parent="." index="2" unique_id=665967752]
+position = Vector2(0, -3)
+shape = SubResource("CircleShape2D_wa5vi")
+
+[node name="StateMachine" parent="." index="3" unique_id=1142003701 node_paths=PackedStringArray("initial_state")]
+initial_state = NodePath("Idle")
+
+[node name="Idle" type="Node" parent="StateMachine" index="0" unique_id=610041248 node_paths=PackedStringArray("parent", "anim_player", "idle_timer")]
+script = ExtResource("5_nnapu")
+parent = NodePath("../..")
+anim_player = NodePath("../../AnimationPlayer")
+idle_timer = NodePath("../../IdleTimer")
+metadata/_custom_type_script = "uid://xkegmi4e8sfs"
+
+[node name="Walk" type="Node" parent="StateMachine" index="1" unique_id=254183409 node_paths=PackedStringArray("parent", "anim_player", "wander_timer")]
+script = ExtResource("6_nnapu")
+parent = NodePath("../..")
+anim_player = NodePath("../../AnimationPlayer")
+wander_timer = NodePath("../../WalkTimer")
+metadata/_custom_type_script = "uid://xkegmi4e8sfs"
+
+[node name="WalkTimer" type="Timer" parent="." index="4" unique_id=2039816620]
+wait_time = 2.0
+one_shot = true
+
+[node name="IdleTimer" type="Timer" parent="." index="5" unique_id=457369617]
+wait_time = 3.0
+one_shot = true
+
+[node name="MenuButton" parent="." index="6" unique_id=1668462171]
+offset_left = -60.0
+offset_top = -60.0
+offset_right = 73.0
+offset_bottom = 48.0
+mouse_filter = 1
+
+[node name="Button" parent="MenuButton" index="0" unique_id=1797805036]
+offset_left = 27.0
+offset_top = 2.0
+offset_right = 94.0
+offset_bottom = 105.0
+
+[node name="MenuBar" parent="." index="7" unique_id=308624412]
+visible = false
+
+[node name="Panel" parent="MenuBar" index="0" unique_id=296568358]
+offset_left = -109.0
+offset_top = -117.0
+offset_right = 119.0
+offset_bottom = -70.0
+
+[node name="TalkBar" parent="." index="8" unique_id=1137477901]
+offset_left = -108.0
+offset_top = -117.0
+offset_right = -68.0
+offset_bottom = -77.0
+
+[connection signal="timeout" from="WalkTimer" to="StateMachine/Walk" method="_on_walk_timer_timeout"]
+[connection signal="timeout" from="IdleTimer" to="StateMachine/Idle" method="_on_idle_timer_timeout"]
