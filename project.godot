@@ -30,6 +30,11 @@ folder_colors={
 "res://Assets/": "red"
 }
 
+[layer_names]
+
+2d_physics/layer_1="World"
+2d_physics/layer_2="NPC"
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

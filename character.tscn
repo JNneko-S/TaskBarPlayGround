@@ -13,7 +13,7 @@ shader_parameter/thickness = 0.0
 shader_parameter/ring_count = 12
 shader_parameter/ring_offset = 0.0
 shader_parameter/outline_color = Color(1, 1, 0.5137255, 1)
-shader_parameter/border_clipping_fix = true
+shader_parameter/border_clipping_fix = false
 shader_parameter/aspect_ratio = 1.0
 shader_parameter/square_border = true
 shader_parameter/offset = Vector2(0, 0)
@@ -30,6 +30,7 @@ shader_parameter/max_or_add = false
 [sub_resource type="LabelSettings" id="LabelSettings_jhy2k"]
 
 [node name="Character" type="CharacterBody2D" unique_id=511040794]
+collision_layer = 2
 script = ExtResource("1_glpr6")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=620507202]
@@ -65,9 +66,10 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Panel" type="Panel" parent="MenuBar" unique_id=296568358]
+custom_minimum_size = Vector2(280, 58)
 layout_mode = 1
-offset_right = 228.0
-offset_bottom = 47.0
+offset_right = 280.0
+offset_bottom = 58.0
 
 [node name="GridContainer" type="GridContainer" parent="MenuBar/Panel" unique_id=1463393677]
 layout_mode = 1
@@ -85,28 +87,30 @@ grow_vertical = 2
 columns = 3
 
 [node name="Talk" type="Button" parent="MenuBar/Panel/GridContainer" unique_id=846147394]
-custom_minimum_size = Vector2(70, 42)
-custom_maximum_size = Vector2(70, 42)
+custom_minimum_size = Vector2(85, 48)
+custom_maximum_size = Vector2(85, 48)
 layout_mode = 2
 icon = ExtResource("3_px5sl")
 icon_alignment = 1
 expand_icon = true
 
 [node name="Present" type="Button" parent="MenuBar/Panel/GridContainer" unique_id=234039229]
-custom_minimum_size = Vector2(70, 42)
+custom_minimum_size = Vector2(85, 48)
 layout_mode = 2
 icon = ExtResource("4_0qfo5")
 icon_alignment = 1
 expand_icon = true
 
 [node name="Slap" type="Button" parent="MenuBar/Panel/GridContainer" unique_id=711394833]
-custom_minimum_size = Vector2(70, 42)
+custom_minimum_size = Vector2(85, 48)
+custom_maximum_size = Vector2(85, 48)
 layout_mode = 2
 icon = ExtResource("5_yxww1")
 icon_alignment = 1
 expand_icon = true
 
 [node name="TalkBar" type="Control" parent="." unique_id=1137477901]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0

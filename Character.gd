@@ -17,16 +17,18 @@ class_name Character
 @onready var talk_label: Label = $TalkBar/Panel/TalkLabel
 @onready var talk_timer: Timer = $TalkTimer
 
-var talk_texts : Array[String] = [
-	"お疲れ様です...",
-	"何かご用があるんですか？",
-	"...?",
-	"お腹空いたかも。",
-	"ほむほむ"
-]
+@export var talk_texts : Array[String] = []
+
+## NPC同士のすれ違い会話で、話しかけられた時に「返事するか」の確率。0.0〜1.0
+## キャラごとに変えてよい（おしゃべりなキャラは高め、無口なキャラは低めなど）
+@export_range(0.0, 1.0) var continue_chance : float = 0.0
 
 var current_acceleration : int = 0
 var move_direction : Vector2 = Vector2.ZERO #移動する方向
+
+#向いているかの判定
+var facing_dir : Vector2 = Vector2.RIGHT
+var _last_line_index : int = -1
 
 var outline_tween : Tween = null
 
@@ -92,4 +94,24 @@ func _on_talk_pressed() -> void:
 func _on_talk_timer_timeout() -> void:
 	talk_label.text = ""
 	talk_bar.visible = false
+#endregion
+
+#region npc_conversation
+## talk_texts から、直前と同じセリフが連続しないように1つ選ぶ
+func get_next_line() -> String:
+	if talk_texts.is_empty():
+		return ""
+	if talk_texts.size() == 1:
+		return talk_texts[0]
+	var index := randi() % talk_texts.size()
+	while index == _last_line_index:
+		index = randi() % talk_texts.size()
+	_last_line_index = index
+	return talk_texts[index]
+
+## NPCManagerからも、プレイヤーのTalkボタンからも、ここを通して吹き出しを出す
+func show_bubble(text: String) -> void:
+	talk_label.text = text
+	talk_bar.visible = true
+	talk_timer.start()
 #endregion

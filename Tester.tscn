@@ -300,6 +300,8 @@ radius = 45.54119
 
 [node name="Tester" unique_id=511040794 instance=ExtResource("1_8cduc")]
 script = ExtResource("2_sc5u8")
+acceleration = 25
+talk_texts = Array[String](["お疲れ様です", "何か御用ですか", "...?", "お腹すいた！", "暇～"])
 
 [node name="AnimationPlayer" parent="." index="0" unique_id=620507202]
 libraries/ = SubResource("AnimationLibrary_uapm7")
@@ -351,14 +353,11 @@ offset_top = 2.0
 offset_right = 133.0
 offset_bottom = 105.0
 
-[node name="MenuBar" parent="." index="7" unique_id=308624412]
-visible = false
-
-[node name="Panel" parent="MenuBar" index="0" unique_id=296568358]
-offset_left = -109.0
-offset_top = -117.0
-offset_right = 119.0
-offset_bottom = -70.0
+[node name="Panel" parent="MenuBar" parent_id_path=PackedInt32Array(308624412) index="0" unique_id=296568358]
+offset_left = -136.0
+offset_top = -121.0
+offset_right = 144.0
+offset_bottom = -63.0
 
 [node name="TalkBar" parent="." index="8" unique_id=1137477901]
 offset_left = -108.0

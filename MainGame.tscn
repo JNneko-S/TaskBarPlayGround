@@ -2,11 +2,18 @@
 
 [ext_resource type="Script" uid="uid://cu36visrgrux8" path="res://MainGame.gd" id="1_e3m3f"]
 [ext_resource type="PackedScene" uid="uid://51ntietqqq8u" path="res://Tester.tscn" id="2_e3m3f"]
+[ext_resource type="PackedScene" uid="uid://bnsolir05pd2q" path="res://Wizard.tscn" id="3_ws5ob"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_5hoxb"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_jhy2k"]
 size = Vector2(1152, 88)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_e3m3f"]
+size = Vector2(1152, 147)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ws5ob"]
+size = Vector2(1152, 147)
 
 [node name="MainGame" type="Node2D" unique_id=719094094]
 script = ExtResource("1_e3m3f")
@@ -15,6 +22,7 @@ script = ExtResource("1_e3m3f")
 
 [node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=709065198]
 position = Vector2(0, 216)
+collision_mask = 2
 input_pickable = true
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D" unique_id=1578735276]
@@ -29,6 +37,7 @@ shape = SubResource("RectangleShape2D_jhy2k")
 [node name="StaticBody2D2" type="StaticBody2D" parent="." unique_id=1895343649]
 position = Vector2(-576, -104)
 rotation = 1.5707964
+collision_mask = 2
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D2" unique_id=2002960605]
 position = Vector2(-2.0503998e-05, 43.75)
@@ -36,12 +45,13 @@ scale = Vector2(1152, 88.5)
 mesh = SubResource("QuadMesh_5hoxb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D2" unique_id=967667918]
-position = Vector2(0, 44)
-shape = SubResource("RectangleShape2D_jhy2k")
+position = Vector2(7.6293945e-06, 14.5)
+shape = SubResource("RectangleShape2D_e3m3f")
 
 [node name="StaticBody2D3" type="StaticBody2D" parent="." unique_id=1786391990]
 position = Vector2(664, -104)
 rotation = 1.5707964
+collision_mask = 2
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D3" unique_id=1924649966]
 position = Vector2(-2.0503998e-05, 43.75)
@@ -49,12 +59,14 @@ scale = Vector2(1152, 88.5)
 mesh = SubResource("QuadMesh_5hoxb")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3" unique_id=2121684722]
-position = Vector2(0, 44)
-shape = SubResource("RectangleShape2D_jhy2k")
+position = Vector2(1.5258789e-05, 73.5)
+shape = SubResource("RectangleShape2D_ws5ob")
 
 [node name="Tester" parent="." unique_id=511040794 instance=ExtResource("2_e3m3f")]
+position = Vector2(-347, 173)
+collision_layer = 1
+
+[node name="Wizard" parent="." unique_id=1041346503 instance=ExtResource("3_ws5ob")]
+position = Vector2(149, 168)
 
 [connection signal="input_event" from="StaticBody2D" to="." method="_on_static_body_2d_input_event"]
-[connection signal="toggled" from="Tester/MenuButton/Button" to="Tester" method="_on_button_toggled"]
-
-[editable path="Tester"]
